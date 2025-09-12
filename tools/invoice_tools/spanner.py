@@ -7,6 +7,11 @@ class InvoiceSpanner:
         self.fulfillment_period = date
         self.orderID = ""
         self.invoice_count = 1
+        self.row_count = 0
+
+    def login(self):
+        gc = gspread.service_account(filename="path/to/credentials.json")
+        return gc
 
     def input_inovice(self, invoice_text: str):
         worksheet = gc.open("TCBM...").sheet1
@@ -18,6 +23,11 @@ class InvoiceSpanner:
             self.invoice_count += 1
             new_tab = worksheet.add_worksheet(title=f"Invoice_{self.invoice_count}", rows="100", cols="20")
             new_tab.append_row([self.product_name, self.quantity, self.fulfillment_period, self.orderID])
+    
+    def delete_most_recent_invoice(self):
+        worksheet = gc.open("TCBM...").sheet1
+        invoice_tab = worksheet.worksheet(f"Invoice_{self.invoice_count}")
+        invoice_tab.delete_row(invoice_tab.row_count)
 
         
 

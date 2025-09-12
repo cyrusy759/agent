@@ -5,6 +5,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain.output_parsers import PydanticOutputParser
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from prompt import INVOICE_PROMPT
+from tools.invoice_tools.invoice_tool import create_invoice_tool
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -23,7 +24,7 @@ agent_executor = AgentExecutor(
         tools=[],
         prompt=INVOICE_PROMPT
     )
-    tools=[],
+    tools=[create_invoice_tool,],
     verbose=True
 )
 
