@@ -12,6 +12,15 @@ class InvoiceSpanner:
     def login(self):
         gc = gspread.service_account(filename="path/to/credentials.json")
         return gc
+    
+    def confirm_login(self):
+        gc = self.login()
+        try:
+            gc.open("TCBM...")
+            return True
+        except Exception as e:
+            print(f"Login failed: {e}")
+            return False
 
     def input_inovice(self, invoice_text: str):
         worksheet = gc.open("TCBM...").sheet1

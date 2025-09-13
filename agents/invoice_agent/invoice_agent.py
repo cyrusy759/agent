@@ -24,7 +24,7 @@ agent_executor = AgentExecutor(
         tools=[],
         prompt=INVOICE_PROMPT
     )
-    tools=[create_invoice_tool,],
+    tools=[create_invoice_tool()],
     verbose=True
 )
 
