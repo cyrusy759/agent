@@ -16,17 +16,35 @@ class Agent(BaseModel):
     quantity: int
     tools_used: list[str]
 
-parser = PydanticOutputParser(pydantic_object=Agent)
+class InvoiceAgent:
+    def __init__(self):
+        self._prompt = INVOICE_PROMPT
+        self._parser = PydanticOutputParser(pydantic_object=Agent)
+        self._query = input("Enter your question: ")
+        
+    def _generate_agent(self):
+        # Create the tool
+        invoice_tool = create_invoice_tool()
+        
+        # Create the agent
+        agent = create_tool_calling_agent(
+            llm=ChatAnthropic(model="claude-3.5-sonnet-20240620", max_retries=3, api_key=API_KEY), 
+            tools=[invoice_tool],
+            prompt=INVOICE_PROMPT
+        )
+        
+        # Create the executor
+        agent_executor = AgentExecutor(
+            agent=agent,
+            tools=[invoice_tool],
+            verbose=True
+        )
+        
+        return agent_executor
 
-agent_executor = AgentExecutor( 
-    agent=create_tool_calling_agent(
-        llm=ChatAnthropic(model="claude-3.5", max_retries=3, api_key=API_KEY), 
-        tools=[],
-        prompt=INVOICE_PROMPT
-    )
-    tools=[create_invoice_tool()],
-    verbose=True
-)
+    def run(self, message):
+        # Pass the message from telegram to the agent
+        agent_executor = self._generate_agent()
+        raw_response = agent_executor.invoke({"input": message})
+        return raw_response
 
-query = input("Enter yoour question")
-raw_response = agent_executor.invoke({"query": query})
