@@ -22,7 +22,7 @@ class InvoiceAgent:
         self._parser = PydanticOutputParser(pydantic_object=Agent)
         self._query = input("Enter your question: ")
         
-    def _generate_agent(self):
+    def generate_agent(self):
         # Create the tool
         invoice_tool = create_invoice_tool()
         
